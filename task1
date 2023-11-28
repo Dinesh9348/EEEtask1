@@ -1,0 +1,51 @@
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, Toast } from 'react-native';
+
+const App = () => {
+  const [speed, setSpeed] = useState('');
+  const [lorentzFactor, setLorentzFactor] = useState(null);
+
+  const handleCalculate = () => {
+    if (!speed || isNaN(speed)) {
+      Toast.show('Invalid speed input. Please enter a valid number.', {
+        backgroundColor: 'red',
+      });
+      return;
+    }
+
+    const speedValue = parseFloat(speed);
+    const speedOfLight = 3e8; // speed of light in m/s
+
+    if (speedValue >= speedOfLight) {
+      Toast.show('Speed cannot be greater than or equal to the speed of light.', {
+        backgroundColor: 'red',
+      });
+      return;
+    }
+
+    const lorentzFactorValue = 1 / Math.sqrt(1 - (speedValue / speedOfLight) ** 2);
+    setLorentzFactor(lorentzFactorValue);
+  };
+
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Lorentz Factor Calculator</Text>
+
+      <TextInput
+        style={{ marginVertical: 10, borderWidth: 1, borderColor: '#ccc', padding: 10 }}
+        placeholder="Enter speed (m/s)"
+        keyboardType="numeric"
+        value={speed}
+        onChangeText={(text) => setSpeed(text)}
+      />
+
+      <Button title="Calculate" onPress={handleCalculate} />
+
+      {lorentzFactor && (
+        <Text style={{ marginTop: 10, fontSize: 18 }}>Lorentz factor: {lorentzFactor.toFixed(3)}</Text>
+      )}
+    </View>
+  );
+};
+
+export default App;
